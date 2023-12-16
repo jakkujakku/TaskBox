@@ -30,16 +30,28 @@ struct ToDoView: View {
                     })
                 }
                 .listStyle(PlainListStyle())
-            }
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
+
+                HStack {
+                    Spacer()
                     Button(action: {
                         let todo = ToDo(title: textContent, insertDate: .now)
                         viewModel.addData(todo: todo)
                         textContent = ""
                     }, label: {
-                        Text("Add")
+                        Image(systemName: "plus")
+                            .font(.title.weight(.semibold))
+                            .padding()
+                            .background(Color.pink)
+                            .foregroundColor(.white)
+                            .clipShape(Circle())
+                            .shadow(radius: 4, x: 0, y: 4)
+
                     })
+                    .padding()
+                }
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
                     EditButton()
                 }
             }

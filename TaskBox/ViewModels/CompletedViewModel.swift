@@ -7,3 +7,6 @@
 
 import Foundation
 
+class CompletedViewModel: ObservableObject {
+    @Published var completedList = DataManager.completedList
+}

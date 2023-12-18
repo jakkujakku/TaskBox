@@ -9,19 +9,24 @@ import SwiftUI
 
 struct ToDoView: View {
     @ObservedObject var viewModel = ToDoViewModel()
-    @State var textContent: String = ""
+    @State private var textContent: String = ""
+    @State private var isShowAlert = false
 
     var body: some View {
         NavigationView {
             VStack {
-                TextField("Enter Content Title", text: $textContent)
-                    .padding()
-                    .background(Color(uiColor: .secondarySystemBackground))
-                    .textFieldStyle(.roundedBorder)
+//                TextField("Enter Content Title", text: $textContent)
+//                    .padding()
+//                    .background(Color(uiColor: .secondarySystemBackground))
+//                    .textFieldStyle(.roundedBorder)
                 List {
-                    ForEach(viewModel.todoList, id: \.self) { todo in
-                        Text(todo.title)
+                    ForEach(viewModel.todoList) { todo in
+                        ToDoRow(title: todo.title,
+                                date: todo.insertDate,
+                                isCompleted: $viewModel.todoList[viewModel.todoList.firstIndex(where: { $0.id == todo.id })!].isCompleted)
+                            .frame(height: 50)
                     }
+
                     .onDelete(perform: { index in
                         viewModel.deleteData(index: index)
                     })
@@ -29,24 +34,29 @@ struct ToDoView: View {
                         viewModel.moveData(index: indices, destination: newOffset)
                     })
                 }
-                .listStyle(PlainListStyle())
+                .listStyle(.plain)
 
                 HStack {
                     Spacer()
-                    Button(action: {
-                        let todo = ToDo(title: textContent, insertDate: .now)
-                        viewModel.addData(todo: todo)
-                        textContent = ""
-                    }, label: {
-                        Image(systemName: "plus")
-                            .font(.title.weight(.semibold))
-                            .padding()
-                            .background(Color.pink)
-                            .foregroundColor(.white)
-                            .clipShape(Circle())
-                            .shadow(radius: 4, x: 0, y: 4)
 
+                    Button(action: {
+                        isShowAlert = true
+//                        let todo = ToDo(title: textContent, insertDate: .now, isCompleted: false)
+//                        viewModel.addData(todo: todo)
+//                        textContent = ""
+                    }, label: {
+                        FloattingButton()
                     })
+                    .alert("To Do Task", isPresented: $isShowAlert) {
+                        TextField("Enter Content Title", text: $textContent)
+                        Button("Save", action: {
+                            let todo = ToDo(title: textContent, insertDate: .now, isCompleted: false)
+                            viewModel.addData(todo: todo)
+                            textContent = ""
+                        })
+                    } message: {
+                        Text("Please Enter your task name.")
+                    }
                     .padding()
                 }
             }
@@ -58,5 +68,11 @@ struct ToDoView: View {
             .navigationTitle("ToDo")
             .navigationBarTitleDisplayMode(.inline)
         }
+    }
+}
+
+struct ToDoView_Previews: PreviewProvider {
+    static var previews: some View {
+        ToDoView()
     }
 }

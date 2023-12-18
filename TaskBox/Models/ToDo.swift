@@ -11,10 +11,12 @@ struct ToDo: Identifiable, Hashable {
     var id: UUID
     var title: String
     var insertDate: Date
+    var isCompleted: Bool
     
-    init(id: UUID = UUID(), title: String, insertDate: Date) {
+    init(id: UUID = UUID(), title: String, insertDate: Date, isCompleted: Bool) {
         self.id = id
         self.title = title
         self.insertDate = insertDate
+        self.isCompleted = isCompleted
     }
 }

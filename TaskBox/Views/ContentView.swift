@@ -7,15 +7,9 @@
 
 import SwiftUI
 
-/*
- 필요한 VC
- To-Do Task
- Completed Task
- */
-
 struct ContentView: View {
     var body: some View {
-        ToDoView()
+        SuperTabView()
     }
 }
 

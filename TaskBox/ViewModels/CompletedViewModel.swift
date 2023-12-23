@@ -8,5 +8,13 @@
 import Foundation
 
 class CompletedViewModel: ObservableObject {
-    @Published var completedList = DataManager.completedList
+    @Published var completedList: [Completed]
+
+    init() {
+        self.completedList = DataManager.shared.completedList
+
+        // DataManager의 completedList 변경을 감지하여 뷰 모델 업데이트
+        DataManager.shared.$completedList
+            .assign(to: &$completedList)
+    }
 }

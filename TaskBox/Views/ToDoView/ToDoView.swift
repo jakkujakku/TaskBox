@@ -8,25 +8,24 @@
 import SwiftUI
 
 struct ToDoView: View {
-    @ObservedObject var viewModel = ToDoViewModel()
+    @StateObject var viewModel = ToDoViewModel()
     @State private var textContent: String = ""
     @State private var isShowAlert = false
 
     var body: some View {
         NavigationView {
             VStack {
-//                TextField("Enter Content Title", text: $textContent)
-//                    .padding()
-//                    .background(Color(uiColor: .secondarySystemBackground))
-//                    .textFieldStyle(.roundedBorder)
                 List {
                     ForEach(viewModel.todoList) { todo in
-                        ToDoRow(title: todo.title,
-                                date: todo.insertDate,
-                                isCompleted: $viewModel.todoList[viewModel.todoList.firstIndex(where: { $0.id == todo.id })!].isCompleted)
-                            .frame(height: 50)
-                    }
+                        if let index = viewModel.todoList.firstIndex(where: { $0.id == todo.id }) {
+                            ToDoRow(item: todo, isCompleted: $viewModel.todoList[index].isCompleted)
+                                .frame(height: 50)
 
+                                .onChange(of: viewModel.todoList[index].isCompleted) { newValue in
+                                    viewModel.handleCompletionChange(of: todo, isCompleted: newValue)
+                                }
+                        }
+                    }
                     .onDelete(perform: { index in
                         viewModel.deleteData(index: index)
                     })
@@ -41,9 +40,6 @@ struct ToDoView: View {
 
                     Button(action: {
                         isShowAlert = true
-//                        let todo = ToDo(title: textContent, insertDate: .now, isCompleted: false)
-//                        viewModel.addData(todo: todo)
-//                        textContent = ""
                     }, label: {
                         FloattingButton()
                     })
@@ -68,6 +64,10 @@ struct ToDoView: View {
             .navigationTitle("ToDo")
             .navigationBarTitleDisplayMode(.inline)
         }
+    }
+
+    func change(_ isChanged: Bool) {
+        isChanged ? print("#### True") : print("#### False")
     }
 }
 

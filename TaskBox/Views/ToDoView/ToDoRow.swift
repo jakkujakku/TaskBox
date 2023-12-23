@@ -8,18 +8,15 @@
 import SwiftUI
 
 struct ToDoRow: View {
-    internal var title: String
-    internal var date: Date
+    var item: ToDo
     @Binding var isCompleted: Bool
 
     var body: some View {
         HStack(alignment: .center) {
-            Text(title)
+            Text(item.title)
                 .font(.system(size: 30, weight: .bold))
                 .strikethrough(isCompleted ? true : false, color: .gray.opacity(0.4))
                 .foregroundStyle(isCompleted ? .gray.opacity(0.4) : .black)
-                
-            
 
             Spacer()
 
@@ -30,6 +27,7 @@ struct ToDoRow: View {
 
 struct ToDoRow_Previews: PreviewProvider {
     static var previews: some View {
-        ToDoRow(title: "Title", date: .now, isCompleted: .constant(false))
+        let todo = ToDo(title: "Hello World", insertDate: .now, isCompleted: false)
+        ToDoRow(item: todo, isCompleted: .constant(false))
     }
 }
